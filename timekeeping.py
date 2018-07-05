@@ -38,18 +38,28 @@ def Print():
         print(printStr)
     print("Total time: {0:.1f}".format(total))
 
+params = []
+
 while not(mode == 'quit' or mode == 'q'):
+    valid = True
     if mode == 'start':
         mode = 'switch'
         now = datetime.datetime.now()
     elif mode == 'task' or mode == 't':
-        desc = input("Input task/project description: ")
-        budget = input("Input budget: ")
-        if desc not in tasks:
-            tasks[desc] = budget
-            taskTimes[budget] = 0
+        if len(params) == 0:
+            desc = input("Input task/project description: ")
+            budget = input("Input budget: ")
+        elif len(params) == 2:
+            desc = params[0]
+            budget = params[1]
         else:
-            print("Error: task name {0} already in use!".format(desc))            
+            valid = False
+        if valid:
+            if desc not in tasks:
+                tasks[desc] = budget
+                taskTimes[budget] = 0
+            else:
+                print("Error: task name {0} already in use!".format(desc))            
     elif mode == 'switch' or mode == 's':
         newTask = input('Select new task: ')
         if newTask in tasks:
@@ -77,7 +87,9 @@ while not(mode == 'quit' or mode == 'q'):
             time += diff
             taskTimes[tasks[modTask]] = time
     Print()
-    mode = input('>> ')
+    inp = input('>> ').split()
+    mode = inp[0]
+    params = inp[1:]
 
 UpdateTask()
 Print()
