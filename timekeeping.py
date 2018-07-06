@@ -66,9 +66,10 @@ while not(mode == 'quit' or mode == 'q'):
         if len(params) == 0:
             desc = input("Input task/project description: ")
             budget = input("Input budget: ")
-        elif len(params) == 2:
-            desc = params[0]
-            budget = params[1]
+        elif len(params) % 2 == 0:
+            for i in range (0, len(params), 2):
+                desc = params[i]
+                budget = params[i + 1]
         else:
             continue
         if desc not in tasks:
