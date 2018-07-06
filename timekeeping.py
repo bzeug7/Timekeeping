@@ -38,14 +38,31 @@ def Print():
         print(printStr)
     print("Total time: {0:.1f}".format(total))
 
+def AmendTime(modTask, diff):
+    UpdateTask()
+    time = 0.0
+    if modTask in tasks:
+        time = taskTimes[tasks[modTask]]
+        print("Total time for task {0}: {1:.1f}".format(modTask, round(time, 1)))
+        if -diff > time:
+            print("Invalid amount of time entered.")
+            return False
+        else:
+            time += diff
+            taskTimes[tasks[modTask]] = time
+        return True
+    else:
+        return False
+
 params = []
 
 while not(mode == 'quit' or mode == 'q'):
-    valid = True
-    if mode == 'start':
-        mode = 'switch'
-        now = datetime.datetime.now()
-    elif mode == 'task' or mode == 't':
+    UpdateTask()
+    Print()
+    inp = input('>> ').split()
+    mode = inp[0]
+    params = inp[1:]
+    if mode == 'task' or mode == 't':
         if len(params) == 0:
             desc = input("Input task/project description: ")
             budget = input("Input budget: ")
@@ -53,43 +70,34 @@ while not(mode == 'quit' or mode == 'q'):
             desc = params[0]
             budget = params[1]
         else:
-            valid = False
-        if valid:
-            if desc not in tasks:
-                tasks[desc] = budget
-                taskTimes[budget] = 0
-            else:
-                print("Error: task name {0} already in use!".format(desc))            
+            continue
+        if desc not in tasks:
+            tasks[desc] = budget
+            taskTimes[budget] = 0
+        else:
+            print("Error: task name {0} already in use!".format(desc))            
     elif mode == 'switch' or mode == 's':
-        newTask = input('Select new task: ')
+        if len(params) == 0:
+            newTask = input('Select new task: ')
+        elif len(params) == 1:
+            newTask = params[0]
+        else:
+            continue
         if newTask in tasks:
             UpdateTask()
             task = newTask
         else:
             print("Error: no such task")
-    elif mode == 'view' or mode == 'v':
-        UpdateTask()
     elif mode == 'amend' or mode == 'a':
-        UpdateTask()
-        modTask = input("Select task to modify: ")
-        time = 0.0
-        if modTask in tasks:
-            time = taskTimes[tasks[modTask]]
-        else:
-            budget = input("New task selected- enter budget: ")
-            tasks[modTask] = budget
-            taskTimes[budget] = 0
-        print("Total time for task {0}: {1:.1f}".format(modTask, round(time, 1)))
-        diff = float(input("Enter time to add/remove: "))
-        if -diff > time:
-            print("Invalid amount of time entered.")
-        else:
-            time += diff
-            taskTimes[tasks[modTask]] = time
-    Print()
-    inp = input('>> ').split()
-    mode = inp[0]
-    params = inp[1:]
+        if(len(params) == 0):
+            modTask = input("Select task to modify: ")
+            diff = float(input("Enter time to add/remove: "))
+            AmendTime(modTask, diff)
+        elif(len(params) % 2 == 0):
+            valid = True
+            for i in range(0, len(params), 2):
+                if(valid):
+                    valid = AmendTime(params[i], float(params[i + 1]))    
 
 UpdateTask()
 Print()
