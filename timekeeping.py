@@ -62,6 +62,9 @@ while not(mode == 'quit' or mode == 'q'):
     inp = input('>> ').split()
     mode = inp[0]
     params = inp[1:]
+    # Create new task
+    # required: short descriptive name, budget
+    # Tasks per command: variable
     if mode == 'task' or mode == 't':
         if len(params) == 0:
             desc = input("Input task/project description: ")
@@ -76,7 +79,10 @@ while not(mode == 'quit' or mode == 'q'):
             tasks[desc] = budget
             taskTimes[budget] = 0
         else:
-            print("Error: task name {0} already in use!".format(desc))            
+            print("Error: task name {0} already in use!".format(desc)) 
+    # Switch task
+    # required: name of task
+    # Switches per command: 1
     elif mode == 'switch' or mode == 's':
         if len(params) == 0:
             newTask = input('Select new task: ')
@@ -89,6 +95,9 @@ while not(mode == 'quit' or mode == 'q'):
             task = newTask
         else:
             print("Error: no such task")
+    # amend time for a specified task
+    # required: name of task, amount to modify
+    # Amends per command: variable
     elif mode == 'amend' or mode == 'a':
         if(len(params) == 0):
             modTask = input("Select task to modify: ")
