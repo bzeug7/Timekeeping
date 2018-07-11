@@ -2,19 +2,20 @@
 import datetime
 
 mode = 'start'
-task = 'break'
-tasks = {'break': 'None'}
-taskTimes = {'None' : 0}
+task = None
+tasks = {}
+taskTimes = {}
 now = datetime.datetime.now()
 
 def UpdateTask():
     global now
-    budget = tasks[task]
-    prev = now
-    now = datetime.datetime.now()
-    hr = now.hour - prev.hour
-    mn = (now.minute - prev.minute) / 60.0
-    taskTimes[budget] += hr + mn
+    if(task):
+        budget = tasks[task]
+        prev = now
+        now = datetime.datetime.now()
+        hr = now.hour - prev.hour
+        mn = (now.minute - prev.minute) / 60.0
+        taskTimes[budget] += hr + mn
 
 def Print():
     print("\n Task\t\tBudget\t\tTime")
@@ -79,6 +80,8 @@ while not(mode == 'quit' or mode == 'q'):
             if desc not in tasks:
                 tasks[desc] = budget
                 taskTimes[budget] = 0
+                if len(tasks) == 1:
+                    task = desc
             else:
                 print("Error: task name {0} already in use!".format(desc)) 
         # Switch task
@@ -108,7 +111,10 @@ while not(mode == 'quit' or mode == 'q'):
                 valid = True
                 for i in range(0, len(params), 2):
                     if(valid):
-                        valid = AmendTime(params[i], float(params[i + 1]))    
+                        valid = AmendTime(params[i], float(params[i + 1]))  
+        # pause time added to tasks
+        elif mode == 'pause' or mode == 'p':
+            task = None
 
 UpdateTask()
 Print()
